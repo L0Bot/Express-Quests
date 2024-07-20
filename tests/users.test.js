@@ -1,6 +1,8 @@
 const request = require("supertest");
-
+const database = require("../database.js");
 const app = require("../src/app");
+
+afterAll(() => database.end());
 
 describe("GET /api/users", () => {
   it("should return all users", async () => {
