@@ -35,6 +35,9 @@ const postMovie = (req, res) => {
       [title, director, year, color, duration]
     )
     .then(([result]) => {
+      if (result.affectedRows >= 1) {
+        res.sendStatus(201);
+      }
       res.send({
         id: result.insertId,
         howManyRowsAdded: result.affectedRows,
@@ -65,8 +68,33 @@ const getMovieById = (req, res) => {
     });
 };
 
+const updateMovieById = (req, res) => {
+  const movieIdToUpdate = parseInt(req.params.id);
+  const { title, director, year, color, duration } = req.body;
+
+  database
+    .query(
+      "UPDATE movies SET title = ?, director = ?, year = ?, color = ?, duration = ? WHERE id = ?",
+      [title, director, year, color, duration, movieIdToUpdate]
+    )
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.sendStatus(404);
+      } else if (result.changedRows >= 1) {
+        res.sendStatus(200);
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.sendStatus(500);
+    });
+};
+
 module.exports = {
   getMovies,
   postMovie,
   getMovieById,
+  updateMovieById,
 };

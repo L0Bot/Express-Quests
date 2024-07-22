@@ -78,8 +78,33 @@ const getUserById = (req, res) => {
     });
 };
 
+const updateUserById = (req, res) => {
+  const userIdToUpdate = req.params.id;
+  const { firstname, lastname, email, city, language } = req.body;
+
+  database
+    .query(
+      "UPDATE users SET firstname = ?, lastname = ?, email = ?, city = ?, language = ? WHERE id = ?",
+      [firstname, lastname, email, city, language, userIdToUpdate]
+    )
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.sendStatus(404);
+      } else if (result.changedRows >= 1) {
+        res.sendStatus(200);
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.sendStatus(500);
+    });
+};
+
 module.exports = {
   getUsers,
   postUser,
   getUserById,
+  updateUserById,
 };
