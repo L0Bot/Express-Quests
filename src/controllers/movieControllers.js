@@ -1,8 +1,22 @@
 const database = require("../../database.js");
 
 const getMovies = (req, res) => {
+  let sql = "SELECT * FROM movies";
+  let sqlValues = [];
+
+  if (req.query.color && req.query.max_duration) {
+    sql += " WHERE color = ? AND duration <= ?";
+    sqlValues.push(req.query.color, req.query.max_duration);
+  } else if (req.query.color) {
+    sql += " WHERE color = ?";
+    sqlValues.push(req.query.color);
+  } else if (req.query.max_duration) {
+    sql += " WHERE duration <= ?";
+    sqlValues.push(req.query.max_duration);
+  }
+
   database
-    .query("SELECT * FROM movies")
+    .query(sql, sqlValues)
     .then(([movies]) => {
       res.json(movies);
     })
