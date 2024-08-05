@@ -48,6 +48,9 @@ const postUser = (req, res) => {
       [firstname, lastname, email, city, language]
     )
     .then(([result]) => {
+      if (result.affectedRows >= 1) {
+        res.status(201);
+      }
       res.send({
         id: result.insertId,
         howManyRowsAdded: result.affectedRows,

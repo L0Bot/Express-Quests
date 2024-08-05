@@ -36,7 +36,7 @@ const postMovie = (req, res) => {
     )
     .then(([result]) => {
       if (result.affectedRows >= 1) {
-        res.sendStatus(201);
+        res.status(201);
       }
       res.send({
         id: result.insertId,
