@@ -92,9 +92,29 @@ const updateMovieById = (req, res) => {
     });
 };
 
+const deleteMovieById = (req, res) => {
+  const movieIdToDelete = parseInt(req.params.id);
+  database
+    .query("DELETE FROM movies WHERE id = ?", [movieIdToDelete])
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.sendStatus(404);
+      } else if (result.affectedRows >= 1) {
+        res.sendStatus(200);
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.sendStatus(500);
+    });
+};
+
 module.exports = {
   getMovies,
   postMovie,
   getMovieById,
   updateMovieById,
+  deleteMovieById,
 };
